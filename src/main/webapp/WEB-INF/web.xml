@@ -9,4 +9,33 @@
     <welcome-file>default.jsp</welcome-file>
     <welcome-file>default.htm</welcome-file>
   </welcome-file-list>
+  
+    
+    <!-- Configuration des Servlets -->
+    <servlet>
+        <servlet-name>TestDatabaseServlet</servlet-name>
+        <servlet-class>servlets.TestDatabaseServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TestDatabaseServlet</servlet-name>
+        <url-pattern>/test-database</url-pattern>
+    </servlet-mapping>
+
+    <!-- Configuration des Filtres -->
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>filters.AuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- Configuration de l'Accueil -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+
+  
 </web-app>
