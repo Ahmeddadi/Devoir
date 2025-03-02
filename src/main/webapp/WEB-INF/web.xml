@@ -25,7 +25,10 @@
 
     <!-- Configuration des Filtres -->
    
-
+<filter>
+    <filter-name>AuthFilter</filter-name>
+    <filter-class>filters.AuthFilter</filter-class>
+</filter>
     <!-- Configuration de l'Accueil -->
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
