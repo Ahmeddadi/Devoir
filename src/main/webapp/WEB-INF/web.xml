@@ -22,6 +22,26 @@
         <servlet-name>TestDatabaseServlet</servlet-name>
         <url-pattern>/test-database</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>AuthentificationServlet</servlet-name>
+        <servlet-class>servlets.AuthentificationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AuthentificationServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    
+    <!-- Servlet de Déconnexion -->
+<servlet>
+    <servlet-name>LogoutServlet</servlet-name>
+    <servlet-class>servlets.LogoutServlet</servlet-class>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>LogoutServlet</servlet-name>
+    <url-pattern>/logout</url-pattern>
+</servlet-mapping>
 
     <!-- Configuration des Filtres -->
    
