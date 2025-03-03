@@ -25,7 +25,7 @@ public class AuthFilter implements Filter {
         System.out.println("[FILTER] Accès à l'URL : " + uri);
 
         // 🔹 Liste des URL accessibles SANS connexion (ajout de /test-database)
-        List<String> publicUrls = Arrays.asList("/projetGrh/login", "/projetGrh/logout", "/projetGrh/test-database");
+        List<String> publicUrls = Arrays.asList("/Devoir/login", "/Devoir/logout", "/Devoir/test-database");
 
         if (publicUrls.contains(uri)) {
             System.out.println("[FILTER] URL publique, accès autorisé.");
