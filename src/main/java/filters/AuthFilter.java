@@ -69,6 +69,20 @@ public class AuthFilter implements Filter {
                 }
             }
         }
+     // 🔹 Empêcher l'ADMIN d'accéder aux évaluations
+        if (user.getRole() == Role.ADMIN) {
+            List<String> evaluationUrls = Arrays.asList("/Devoir/evaluations");
+
+            for (String url : evaluationUrls) {
+                if (uri.startsWith(url)) {
+                    res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    res.getWriter().write("Accès refusé. Seuls les responsables peuvent gérer les évaluations.");
+                    System.out.println("[FILTER ERROR] Accès interdit pour un administrateur à l'URL : " + uri);
+                    return;
+                }
+            }
+        }
+
 
 
 
