@@ -38,9 +38,9 @@ public class EmployeServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        String idStr = "2";
-        String adresse ="adresse";
-        String telephone = "200";
+        String idStr=request.getParameter("id");
+        String adresse =request.getParameter("adresse");
+        String telephone = request.getParameter("telephone");
 
         System.out.println("\n[PUT /employes] Requête reçue");
         System.out.println("[DEBUG] id: " + idStr + ", adresse: " + adresse + ", telephone: " + telephone);
@@ -155,4 +155,53 @@ public class EmployeServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            // Récupération de l'ID de l'employé à supprimer
+            String idStr = request.getParameter("id");
+
+            System.out.println("\n[EMPLOYE] Tentative de suppression de l'employé ID : " + idStr);
+
+            // Vérification si l'ID est fourni
+            if (idStr == null || idStr.trim().isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("L'ID de l'employé est obligatoire.");
+                System.out.println("[EMPLOYE ERROR] ID manquant.");
+                return;
+            }
+
+            int id;
+            try {
+                id = Integer.parseInt(idStr);
+            } catch (NumberFormatException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("ID invalide.");
+                System.out.println("[EMPLOYE ERROR] Format d'ID invalide.");
+                return;
+            }
+
+            // Vérification si l'employé existe
+            if (!Database.employes.containsKey(id)) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter().write("Employé non trouvé.");
+                System.out.println("[EMPLOYE ERROR] Employé introuvable.");
+                return;
+            }
+
+            // Suppression de l'employé
+            Database.employes.remove(id);
+
+            // Réponse de succès
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write("Employé supprimé avec succès.");
+            System.out.println("[EMPLOYE SUCCESS] Employé supprimé : ID " + id);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Erreur serveur.");
+            e.printStackTrace();
+        }
+    }
+
 }
