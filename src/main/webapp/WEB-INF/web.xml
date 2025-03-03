@@ -1,28 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" id="WebApp_ID" version="6.0">
   <display-name>Devoir</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-  </welcome-file-list>
+ 
   
     
-    <!-- Configuration des Servlets -->
-    <servlet>
-        <servlet-name>TestDatabaseServlet</servlet-name>
-        <servlet-class>servlets.TestDatabaseServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>TestDatabaseServlet</servlet-name>
-        <url-pattern>/test-database</url-pattern>
-    </servlet-mapping>
-    
+ <!-- ================== FILTRE D'AUTHENTIFICATION ================== -->
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>filters.AuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- ================== SERVLET D'AUTHENTIFICATION ================== -->
     <servlet>
         <servlet-name>AuthentificationServlet</servlet-name>
         <servlet-class>servlets.AuthentificationServlet</servlet-class>
@@ -31,36 +24,89 @@
         <servlet-name>AuthentificationServlet</servlet-name>
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
+
+    <!-- ================== SERVLET DE GESTION DES EMPLOYÉS ================== -->
+    <servlet>
+        <servlet-name>EmployeServlet</servlet-name>
+        <servlet-class>servlets.EmployeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EmployeServlet</servlet-name>
+        <url-pattern>/employes</url-pattern>
+    </servlet-mapping>
+
+    <!-- ================== SERVLET DE GESTION DES DÉPARTEMENTS ================== -->
+    <servlet>
+        <servlet-name>DepartementServlet</servlet-name>
+        <servlet-class>servlets.DepartementServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DepartementServlet</servlet-name>
+        <url-pattern>/departements</url-pattern>
+    </servlet-mapping>
+
+    <!-- ================== SERVLET D'ÉVALUATION DES EMPLOYÉS ================== -->
+    <servlet>
+        <servlet-name>EvaluationServlet</servlet-name>
+        <servlet-class>servlets.EvaluationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EvaluationServlet</servlet-name>
+        <url-pattern>/evaluations</url-pattern>
+    </servlet-mapping>
+
+    <!-- ================== SERVLET DE CONSULTATION DU PROFIL ================== -->
+    <servlet>
+        <servlet-name>ProfilServlet</servlet-name>
+        <servlet-class>servlets.ProfilServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProfilServlet</servlet-name>
+        <url-pattern>/profil</url-pattern>
+    </servlet-mapping>
+
+    <!-- ================== SERVLET DE DÉCONNEXION ================== -->
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>servlets.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <!-- ================== CONFIGURATION GLOBALE ================== -->
+    <context-param>
+        <param-name>defaultEncoding</param-name>
+        <param-value>UTF-8</param-value>
+    </context-param>
+    <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ignore</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     
-    <!-- Servlet de Déconnexion -->
-<servlet>
-    <servlet-name>LogoutServlet</servlet-name>
-    <servlet-class>servlets.LogoutServlet</servlet-class>
-</servlet>
-
-<servlet-mapping>
-    <servlet-name>LogoutServlet</servlet-name>
-    <url-pattern>/logout</url-pattern>
-</servlet-mapping>
-
-    <!-- Configuration des Filtres -->
-   
-<filter>
-    <filter-name>AuthFilter</filter-name>
-    <filter-class>filters.AuthFilter</filter-class>
-</filter>
-
-
-<servlet>
-    <servlet-name>ProfilServlet</servlet-name>
-    <servlet-class>servlets.ProfilServlet</servlet-class>
-</servlet>
-
-<servlet-mapping>
-    <servlet-name>ProfilServlet</servlet-name>
-    <url-pattern>/profil</url-pattern>
-</servlet-mapping>
-
+    
+    
+    <servlet>
+        <servlet-name>TestDatabaseServlet</servlet-name>
+        <servlet-class>servlets.TestDatabaseServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TestDatabaseServlet</servlet-name>
+        <url-pattern>/test-database</url-pattern>
+    </servlet-mapping>
 
   
 </web-app>
