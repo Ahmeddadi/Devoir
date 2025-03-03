@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import modeles.Employe;
+import modeles.Role;
 
 
 public class AuthFilter implements Filter {
@@ -42,6 +43,34 @@ public class AuthFilter implements Filter {
             System.out.println("[FILTER ERROR] Aucun utilisateur connecté.");
             return;
         }
+        if (user.getRole() == Role.EMPLOYE) {
+            // 🔹 Bloquer l'accès aux fonctionnalités d'administration
+            List<String> adminUrls = Arrays.asList("/Devoir/employes", "/Devoir/departements", "/Devoir/evaluations");
+
+            for (String url : adminUrls) {
+                if (uri.startsWith(url)) {
+                    res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    res.getWriter().write("Accès refusé. Seuls les administrateurs et responsables peuvent accéder à cette ressource.");
+                    System.out.println("[FILTER ERROR] Accès interdit pour un employé à l'URL : " + uri);
+                    return;
+                }
+            }
+        }
+        if (user.getRole() == Role.RESPONSABLE) {
+            // 🔹 Bloquer l'accès aux fonctionnalités réservées à l'ADMIN
+            List<String> adminOnlyUrls = Arrays.asList("/Devoir/employes", "/Devoir/departements");
+
+            for (String url : adminOnlyUrls) {
+                if (uri.startsWith(url)) {
+                    res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    res.getWriter().write("Accès refusé. Seuls les administrateurs peuvent accéder à cette ressource.");
+                    System.out.println("[FILTER ERROR] Accès interdit pour un responsable à l'URL : " + uri);
+                    return;
+                }
+            }
+        }
+
+
 
         System.out.println("[FILTER SUCCESS] Utilisateur authentifié : " + user.getEmail() + " (" + user.getRole() + ")");
 
