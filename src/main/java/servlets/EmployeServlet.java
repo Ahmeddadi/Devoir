@@ -15,23 +15,49 @@ import java.util.stream.Collectors;
 
 public class EmployeServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    response.setContentType("application/json");
+	    response.setCharacterEncoding("UTF-8");
 
-        System.out.println("[GET /employes] Requête reçue");
+	    System.out.println("[GET /employes] Requête reçue");
 
-        // 🔹 Retourne la liste des employés sous format JSON
-        String json = Database.employes.values().stream()
-                .map(e -> String.format(
-                        "{\"id\": %d, \"nom\": \"%s\", \"prenom\": \"%s\", \"email\": \"%s\", \"role\": \"%s\"}",
-                        e.getId(), e.getNom(), e.getPrenom(), e.getEmail(), e.getRole()))
-                .collect(Collectors.joining(",", "[", "]"));
+	    // 🔹 Récupérer l'utilisateur connecté
+	    Employe user = (Employe) request.getSession().getAttribute("user");
+	    if (user == null) {
+	        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	        response.getWriter().write("{\"error\": \"Accès refusé. Connectez-vous.\"}");
+	        return;
+	    }
 
-        response.getWriter().write(json);
-        System.out.println("[SUCCESS] Employés envoyés.");
-    }
+	    // 🔹 Vérifier le rôle de l'utilisateur
+	    String json;
+	    if (user.getRole() == Role.ADMIN) {
+	        // 🔹 L'ADMIN voit tous les employés
+	        json = Database.employes.values().stream()
+	            .map(e -> String.format(
+	                "{\"id\": %d, \"nom\": \"%s\", \"prenom\": \"%s\", \"email\": \"%s\",\"telephone\":\"%s\", \"role\": \"%s\"}",
+	                e.getId(), e.getNom(), e.getPrenom(), e.getEmail(),e.getTelephone(), e.getRole()))
+	            .collect(Collectors.joining(",", "[", "]"));
+	    } else if (user.getRole() == Role.RESPONSABLE) {
+	        // 🔹 Un responsable voit uniquement les employés de son département
+	        int responsableDepartementId = user.getDepartement().getId();
+	        json = Database.employes.values().stream()
+	            .filter(e -> e.getDepartement().getId() == responsableDepartementId) // Filtrer par département
+	            .map(e -> String.format(
+	                "{\"id\": %d, \"nom\": \"%s\", \"prenom\": \"%s\", \"email\": \"%s\", \"role\": \"%s\"}",
+	                e.getId(), e.getNom(), e.getPrenom(), e.getEmail(), e.getRole()))
+	            .collect(Collectors.joining(",", "[", "]"));
+	    } else {
+	        // 🔹 Un employé n'a pas le droit de voir cette liste
+	        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+	        response.getWriter().write("{\"error\": \"Accès refusé.\"}");
+	        return;
+	    }
+
+	    response.getWriter().write(json);
+	    System.out.println("[SUCCESS] Employés envoyés.");
+	}
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
