@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import modeles.Employe;
 import modeles.Role;
+import utils.Database;
 
 
 public class AuthFilter implements Filter {
@@ -57,18 +58,30 @@ public class AuthFilter implements Filter {
             }
         }
         if (user.getRole() == Role.RESPONSABLE) {
-            // 🔹 Bloquer l'accès aux fonctionnalités réservées à l'ADMIN
-            List<String> adminOnlyUrls = Arrays.asList("/Devoir/employes", "/Devoir/departements");
+            // 🔹 Vérifier si le responsable essaie d'accéder aux employés
+            if (uri.startsWith("/Devoir/employes")) {
+                String employeIdStr = req.getParameter("id");
 
-            for (String url : adminOnlyUrls) {
-                if (uri.startsWith(url)) {
-                    res.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    res.getWriter().write("Accès refusé. Seuls les administrateurs peuvent accéder à cette ressource.");
-                    System.out.println("[FILTER ERROR] Accès interdit pour un responsable à l'URL : " + uri);
-                    return;
+                if (employeIdStr != null) {
+                    try {
+                        int employeId = Integer.parseInt(employeIdStr);
+                        Employe employe = Database.employes.get(employeId);
+
+                        if (employe == null || employe.getDepartement().getId() != user.getDepartement().getId()) {
+                            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            res.getWriter().write("Accès refusé. Vous ne pouvez voir que les employés de votre département.");
+                            System.out.println("[FILTER ERROR] Accès interdit pour un responsable à l'employé ID : " + employeId);
+                            return;
+                        }
+                    } catch (NumberFormatException e) {
+                        res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        res.getWriter().write("ID invalide.");
+                        return;
+                    }
                 }
             }
         }
+
      // 🔹 Empêcher l'ADMIN d'accéder aux évaluations
         if (user.getRole() == Role.ADMIN) {
             List<String> evaluationUrls = Arrays.asList("/Devoir/evaluations");
