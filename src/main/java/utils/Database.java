@@ -13,46 +13,68 @@ public class Database {
 
     static {
         System.out.println("[DATABASE] Initialisation des données...");
-        
-        // Création du département "Administration"
+
+        // 🔹 Création du département "Administration"
         Departement adminDep = new Departement(departementIdCounter++, "Administration");
         departements.put(adminDep.getId(), adminDep);
 
-        // Création de l'administrateur par défaut
+        // 🔹 Création de l'Administrateur
         Employe admin = new Employe(
-            employeIdCounter++, "Admin", "Admin", "0000", "Adresse", "0000000000",
+            generateEmployeId(), "Admin", "Admin", "0000", "Adresse Admin", "0000000000",
             "admin@example.com", "admin", adminDep, Role.ADMIN
         );
         employes.put(admin.getId(), admin);
-
         System.out.println("[DATABASE] Administrateur ajouté : " + admin.getEmail() + " (ID: " + admin.getId() + ")");
 
-        // Création du département "Développement"
-        Departement devDep = new Departement(departementIdCounter++, "Développement");
-        departements.put(devDep.getId(), devDep);
+        // 🔹 Création des départements
+        Departement dep1 = new Departement(generateDepartementId(), "Département 1");
+        Departement dep2 = new Departement(generateDepartementId(), "Département 2");
+        departements.put(dep1.getId(), dep1);
+        departements.put(dep2.getId(), dep2);
 
-        // Ajout des employés
-        Employe employe1 = new Employe(
-            employeIdCounter++, "Dupont", "Jean", "123456", "10 rue Paris", "0606060606",
-            "jean@example.com", "password123", devDep, Role.EMPLOYE
+        // 🔹 Création des Responsables
+        Employe responsable1 = new Employe(
+            generateEmployeId(), "Moustapha", "Mouhamed", "1111", "10 rue Paris", "0606060606",
+            "paul@example.com", "password1", dep1, Role.RESPONSABLE
         );
-
-        Employe employe2 = new Employe(
-            employeIdCounter++, "Martin", "Sophie", "789012", "5 rue Lyon", "0707070707",
-            "sophie@example.com", "password456", devDep, Role.RESPONSABLE
+        Employe responsable2 = new Employe(
+            generateEmployeId(), "Ahmed", "Elhaj Sidi", "2222", "20 rue Lyon", "0707070707",
+            "claire@example.com", "password2", dep2, Role.RESPONSABLE
         );
+        employes.put(responsable1.getId(), responsable1);
+        employes.put(responsable2.getId(), responsable2);
+        System.out.println("[DATABASE] Responsable ajouté : " + responsable1.getEmail() + " (ID: " + responsable1.getId() + ")");
+        System.out.println("[DATABASE] Responsable ajouté : " + responsable2.getEmail() + " (ID: " + responsable2.getId() + ")");
 
-        employes.put(employe1.getId(), employe1);
-        employes.put(employe2.getId(), employe2);
+        // 🔹 Création des employés sous chaque Responsable
+        for (int i = 1; i <= 3; i++) {
+            Employe empDep1 = new Employe(
+                generateEmployeId(), "Employe" + i, "Dep1", "300" + i, "Adresse " + i, "061111111" + i,
+                "emp" + i + "@dep1.com", "pass" + i, dep1, Role.EMPLOYE
+            );
+            employes.put(empDep1.getId(), empDep1);
+            System.out.println("[DATABASE] Employé ajouté : " + empDep1.getEmail() + " (ID: " + empDep1.getId() + ") - Dép. 1");
 
-        System.out.println("[DATABASE] Employé ajouté : " + employe1.getEmail() + " (ID: " + employe1.getId() + ")");
-        System.out.println("[DATABASE] Employé ajouté : " + employe2.getEmail() + " (ID: " + employe2.getId() + ")");
+            Employe empDep2 = new Employe(
+                generateEmployeId(), "Employe" + i, "Dep2", "400" + i, "Adresse " + i, "071111111" + i,
+                "emp" + i + "@dep2.com", "pass" + i, dep2, Role.EMPLOYE
+            );
+            employes.put(empDep2.getId(), empDep2);
+            System.out.println("[DATABASE] Employé ajouté : " + empDep2.getEmail() + " (ID: " + empDep2.getId() + ") - Dép. 2");
+        }
 
-        // Vérification des données initialisées
+        // 🔹 Vérification finale
         System.out.println("[DATABASE] Nombre total d'employés : " + employes.size());
         System.out.println("[DATABASE] Nombre total de départements : " + departements.size());
     }
 
-    public static int generateEmployeId() { return employeIdCounter++; }
-    public static int generateDepartementId() { return departementIdCounter++; }
+    // 🔹 Génère un ID unique pour un employé
+    public static int generateEmployeId() {
+        return employeIdCounter++;
+    }
+
+    // 🔹 Génère un ID unique pour un département
+    public static int generateDepartementId() {
+        return departementIdCounter++;
+    }
 }
